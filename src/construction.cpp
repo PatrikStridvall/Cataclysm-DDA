@@ -301,13 +301,13 @@ void construction_menu()
                 previous_index = tabindex;
             }
             if( isnew ){
-                if( !uistate.last_construction.empty() ){
+                if( !uistate.construction->last_construction.empty() ){
                     select = std::distance(constructs.begin(),
                                             std::find( constructs.begin(),
                                                         constructs.end(),
-                                                        uistate.last_construction ));
+                                                        uistate.construction->last_construction ));
                 }
-                filter = uistate.construction_filter;
+                filter = uistate.construction->construction_filter;
             }
         }
         // Erase existing tab selection & list of constructions
@@ -558,7 +558,7 @@ void construction_menu()
                 update_cat = true;
                 select = 0;
             }
-            uistate.construction_filter = filter;
+            uistate.construction->construction_filter = filter;
         } else if( action == "DOWN" ) {
             update_info = true;
             if( select < ( int )constructs.size() - 1 ) {
@@ -619,7 +619,7 @@ void construction_menu()
             }
             if( player_can_build( g->u, total_inv, constructs[select] ) ) {
                 place_construction( constructs[select] );
-                uistate.last_construction = constructs[select];
+                uistate.construction->last_construction = constructs[select];
                 exit = true;
             } else {
                 popup( _( "You can't build that!" ) );
@@ -1245,6 +1245,16 @@ void check_constructions()
                       c.description.c_str(), c.id, i );
         }
     }
+}
+
+void construction_uistatedata::serialize(JsonOut &json) const
+{
+    ( void ) json; // unused;
+}
+
+void construction_uistatedata::deserialize(JsonIn &jsin)
+{
+    auto jo = jsin.get_object();
 }
 
 int construction::print_time( const catacurses::window &w, int ypos, int xpos, int width, nc_color col ) const
